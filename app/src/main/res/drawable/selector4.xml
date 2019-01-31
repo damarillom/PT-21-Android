@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--<item android:drawable="@drawable/ic_action_image_button" android:state_selected="true"></item>
+    <item android:drawable="@android:drawable/btn_star_big_on" android:state_pressed="false"></item>-->
+    <item android:state_pressed="true" android:drawable="@android:drawable/sym_action_call"></item>
+    <item android:drawable="@android:drawable/ic_notification_overlay" ></item>
+</selector>
