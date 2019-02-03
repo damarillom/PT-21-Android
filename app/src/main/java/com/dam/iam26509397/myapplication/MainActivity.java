@@ -1,8 +1,10 @@
 package com.dam.iam26509397.myapplication;
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.media.MediaRecorder;
 import android.media.SoundPool;
@@ -12,6 +14,8 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -21,10 +25,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,6 +46,10 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "SoundRecordingActivity";
     private View startButton;
     private View stopButton;
+    private static final int MY_PERMISSIONS_REQUESTS = 10;
+    File sampleDir = Environment.getExternalStorageDirectory();
+    TextView txtInfo;
+    List<String> llista=new ArrayList<String>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,9 +78,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         soundID1 = soundPool.load(this, R.raw.sound1, 1);
-        soundID2 = soundPool.load(this, R.raw.sound1, 1);
-        soundID3 = soundPool.load(this, R.raw.sound1, 1);
-        soundID4 = soundPool.load(this, R.raw.sound1, 1);
+        soundID2 = soundPool.load(this, R.raw.sound2, 1);
+        soundID3 = soundPool.load(this, R.raw.sound3, 1);
+        soundID4 = soundPool.load(this, R.raw.sound4, 1);
 
         startButton = findViewById(R.id.button);
         stopButton = findViewById(R.id.button2);
@@ -160,6 +171,89 @@ public class MainActivity extends AppCompatActivity {
     };
 
     public void startRecording(View view) throws IOException {
+        /**startButton.setEnabled(false);
+        stopButton.setEnabled(true);
+
+        String estat=Environment.getExternalStorageState();
+        // comprova si hi ha SD i si puc escriure en ella
+        if (estat.equals(Environment.MEDIA_MOUNTED)) {
+            txtInfo.setText("");
+
+            Log.d(TAG, "media mounted" + ", " + String.valueOf(sampleDir));
+
+            int permCheck1= ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
+            int permCheck= ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+            // Log.d(TAG, "permCheck és:" + ", " + String.valueOf(permCheck)+","+String.valueOf(permCheck1));
+
+            if (!(permCheck== PackageManager.PERMISSION_GRANTED) |
+                    !(permCheck1== PackageManager.PERMISSION_GRANTED)) {
+
+                //ara cal demanar permissos...
+                if ((ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) |
+                        (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECORD_AUDIO)))) {
+
+
+                    // asincrona:no bloquejar el thread esperant la seva resposta
+                    // Bona pràctica, try again to request the permission.
+                    // explicar a l usuari per què calen aquests permisos
+                    Toast.makeText(this, "Per seguretat, està deshabilitada la SD i el microfon, habiliti'ls ", Toast.LENGTH_LONG).show();
+                    //menu dialeg
+                    txtInfo.setText("Per seguretat, està deshabilitada la SD i el microfon, habiliti'ls els dos");
+
+                    ActivityCompat.requestPermissions
+                            (this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                    Manifest.permission.RECORD_AUDIO}, MY_PERMISSIONS_REQUESTS);
+
+                } else {
+                    // request the permission.
+                    // CALLBACK_NUMBER is a integer constants
+                    Toast.makeText(this, "demana permis, no rationale ", Toast.LENGTH_LONG).show();
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                    Manifest.permission.RECORD_AUDIO}, MY_PERMISSIONS_REQUESTS);
+                    // The callback method gets the result of the request.
+                    Log.d(TAG, "startRecording: no rationale");
+                }
+                //txtInfo.setText("");
+
+            }
+
+            else {
+                Log.d(TAG, "entra, té permissos:" + ", " + String.valueOf(permCheck));
+                try {
+                    audiofile = File.createTempFile("sound", ".3gp", sampleDir);
+                    recorder = new MediaRecorder();
+                    //aquí, peta si no té permissos...
+
+                    //NO TÉ PERMISOS PER defecte,
+                    //hem de demanar .record_audio en runtime, com write_external_storage
+                    recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+
+                    recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+                    recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+
+                    recorder.setOutputFile(audiofile.getAbsolutePath());
+
+                    Log.d(TAG, "startRecording: "+audiofile.getAbsolutePath());
+                    recorder.prepare();
+                    recorder.start();
+                } catch (IllegalStateException e) {
+                    e.printStackTrace();
+                    Log.d(TAG, "startRecording1: "+ e.getMessage() + e.getCause());
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.d(TAG, "sd card error: "+String.valueOf(sampleDir)+ e.getMessage() + e.getCause());
+
+                } catch (Exception e) {
+                    Log.d(TAG, "startRecording3: " + e.getMessage() + e.getCause());
+                    Toast.makeText(this, "Exception: missatge: " + e.getMessage() + ", causa: " + e.getCause() + ", " +
+                            String.valueOf(audiofile.getAbsolutePath()), Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        }*/
 
         startButton.setEnabled(false);
         stopButton.setEnabled(true);
@@ -178,6 +272,7 @@ public class MainActivity extends AppCompatActivity {
         recorder.setOutputFile(audiofile.getAbsolutePath());
         recorder.prepare();
         recorder.start();
+
     }
 
     public void stopRecording(View view) {
@@ -186,6 +281,21 @@ public class MainActivity extends AppCompatActivity {
         recorder.stop();
         recorder.release();
         addRecordingToMediaLibrary();
+        /**try {
+            startButton.setEnabled(true);
+            stopButton.setEnabled(false);
+            recorder.stop();
+            recorder.release();
+            llista.add(audiofile.getAbsolutePath());
+            addRecordingToMediaLibrary();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+            Log.d(TAG, "stopRecording: " + e.getMessage() + e.getCause());
+            Toast.makeText(this, "IllegalStateException"+e.getMessage() + e.getCause(), Toast.LENGTH_SHORT).show();
+
+        } catch (Exception e) {
+            Toast.makeText(this, "Exception"+e.getMessage() + e.getCause(), Toast.LENGTH_SHORT).show();
+        }*/
     }
 
     protected void addRecordingToMediaLibrary() {
@@ -202,5 +312,68 @@ public class MainActivity extends AppCompatActivity {
 
         sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, newUri));
         Toast.makeText(this, "Added File " + newUri, Toast.LENGTH_LONG).show();
+        /**try {
+            ContentValues values = new ContentValues(4);
+            long current = System.currentTimeMillis();
+            values.put(MediaStore.Audio.Media.TITLE, "audio" + audiofile.getName());
+            values.put(MediaStore.Audio.Media.DATE_ADDED, (int) (current / 1000));
+            values.put(MediaStore.Audio.Media.MIME_TYPE, "audio/3gpp");
+            values.put(MediaStore.Audio.Media.DATA, audiofile.getAbsolutePath());
+            ContentResolver contentResolver = getContentResolver();
+
+            Uri base = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+            Uri newUri = contentResolver.insert(base, values);
+
+            sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, newUri));
+            //Toast.makeText(this, "Added File " + newUri, Toast.LENGTH_LONG).show();
+            Log.d(TAG, "addRecordingToMediaLibrary: "+newUri);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG, "addRecordingToMediaLibrary: "+e.getCause()+", " + e.getMessage()+", ");
+            Toast.makeText(this, e.getMessage()+ e.getCause(), Toast.LENGTH_SHORT).show();
+        }*/
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUESTS: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
+                        grantResults[1]==PackageManager.PERMISSION_GRANTED ) {
+                    // permission was granted, do your work....
+                    Log.d("test" ,"tot concedit");
+
+                    try {
+                        audiofile = File.createTempFile("sound", ".3gp", sampleDir);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    recorder = new MediaRecorder();
+                    recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                    recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+                    recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+                    recorder.setOutputFile(audiofile.getAbsolutePath());
+                    try {
+                        recorder.prepare();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    recorder.start();
+
+                } else {
+                    // permission denied
+                    // Disable the functionality that depends on this permission.
+
+                    //deixarem que torni a intentar-ho
+                    startButton.setEnabled(true);
+                    stopButton.setEnabled(false);
+                }
+                return;
+            }
+        }
     }
 }
