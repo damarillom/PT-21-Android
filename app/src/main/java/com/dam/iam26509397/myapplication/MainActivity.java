@@ -17,6 +17,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -171,13 +173,13 @@ public class MainActivity extends AppCompatActivity {
     };
 
     public void startRecording(View view) throws IOException {
-        /**startButton.setEnabled(false);
+        startButton.setEnabled(false);
         stopButton.setEnabled(true);
 
         String estat=Environment.getExternalStorageState();
         // comprova si hi ha SD i si puc escriure en ella
         if (estat.equals(Environment.MEDIA_MOUNTED)) {
-            txtInfo.setText("");
+            //txtInfo.setText("");
 
             Log.d(TAG, "media mounted" + ", " + String.valueOf(sampleDir));
 
@@ -199,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
                     // explicar a l usuari per què calen aquests permisos
                     Toast.makeText(this, "Per seguretat, està deshabilitada la SD i el microfon, habiliti'ls ", Toast.LENGTH_LONG).show();
                     //menu dialeg
-                    txtInfo.setText("Per seguretat, està deshabilitada la SD i el microfon, habiliti'ls els dos");
+                    //txtInfo.setText("Per seguretat, està deshabilitada la SD i el microfon, habiliti'ls els dos");
 
                     ActivityCompat.requestPermissions
                             (this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -253,9 +255,9 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             }
-        }*/
+        }
 
-        startButton.setEnabled(false);
+        /**startButton.setEnabled(false);
         stopButton.setEnabled(true);
 
         File sampleDir = Environment.getExternalStorageDirectory();
@@ -271,17 +273,17 @@ public class MainActivity extends AppCompatActivity {
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         recorder.setOutputFile(audiofile.getAbsolutePath());
         recorder.prepare();
-        recorder.start();
+        recorder.start();*/
 
     }
 
     public void stopRecording(View view) {
-        startButton.setEnabled(true);
+        /**startButton.setEnabled(true);
         stopButton.setEnabled(false);
         recorder.stop();
         recorder.release();
-        addRecordingToMediaLibrary();
-        /**try {
+        addRecordingToMediaLibrary();*/
+        try {
             startButton.setEnabled(true);
             stopButton.setEnabled(false);
             recorder.stop();
@@ -295,11 +297,17 @@ public class MainActivity extends AppCompatActivity {
 
         } catch (Exception e) {
             Toast.makeText(this, "Exception"+e.getMessage() + e.getCause(), Toast.LENGTH_SHORT).show();
-        }*/
+        }
+        try {
+            showRecordings(view);
+        } catch (Exception e) {
+
+
+        }
     }
 
     protected void addRecordingToMediaLibrary() {
-        ContentValues values = new ContentValues(4);
+        /**ContentValues values = new ContentValues(4);
         long current = System.currentTimeMillis();
         values.put(MediaStore.Audio.Media.TITLE, "audio" + audiofile.getName());
         values.put(MediaStore.Audio.Media.DATE_ADDED, (int) (current / 1000));
@@ -311,8 +319,8 @@ public class MainActivity extends AppCompatActivity {
         Uri newUri = contentResolver.insert(base, values);
 
         sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, newUri));
-        Toast.makeText(this, "Added File " + newUri, Toast.LENGTH_LONG).show();
-        /**try {
+        Toast.makeText(this, "Added File " + newUri, Toast.LENGTH_LONG).show();*/
+        try {
             ContentValues values = new ContentValues(4);
             long current = System.currentTimeMillis();
             values.put(MediaStore.Audio.Media.TITLE, "audio" + audiofile.getName());
@@ -333,7 +341,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
             Log.e(TAG, "addRecordingToMediaLibrary: "+e.getCause()+", " + e.getMessage()+", ");
             Toast.makeText(this, e.getMessage()+ e.getCause(), Toast.LENGTH_SHORT).show();
-        }*/
+        }
     }
 
     @Override
@@ -376,4 +384,35 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    public void showRecordings(View view) {
+        RecyclerView recyclerView;
+
+        try {
+            recyclerView = (RecyclerView) findViewById(R.id.my_recycler);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            //recyclerView.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
+            if (! (llista== null)) {
+                //Toast.makeText(this, "size:" + String.valueOf(llista.size()), Toast.LENGTH_LONG).show();
+                if (llista.size()==0) Toast.makeText(this, "No hi ha cap gravació a mostrar", Toast.LENGTH_LONG).show();
+                RecyclerView.Adapter mAdapter = new CustomAdapter(llista);
+                recyclerView.setAdapter(mAdapter);
+                //Log.d("test", "recy done 2");
+            }
+
+            startButton.setEnabled(true);
+            stopButton.setEnabled(false);
+            //addRecordingToMediaLibrary();
+
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+            Log.d(TAG, "stopRecording: " + e.getMessage() + e.getCause());
+            Toast.makeText(this, "IllegalStateException"+e.getMessage() + e.getCause(), Toast.LENGTH_SHORT).show();
+
+        } catch (Exception e) {
+            Toast.makeText(this, "Exception"+e.getMessage() + e.getCause(), Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
 }
