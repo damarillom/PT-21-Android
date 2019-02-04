@@ -107,6 +107,15 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         }
+        if (id == R.id.action_call) {
+            try {
+                Intent intent = new Intent(this, CallActivity.class);
+                startActivity(intent);
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -301,7 +310,6 @@ public class MainActivity extends AppCompatActivity {
         try {
             showRecordings(view);
         } catch (Exception e) {
-
 
         }
     }
