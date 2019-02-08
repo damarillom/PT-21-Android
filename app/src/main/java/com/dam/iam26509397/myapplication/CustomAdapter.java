@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.List;
@@ -111,7 +112,6 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
     public void PlaySound (int position) throws IOException {
         final int[] loaded = {0};
         int soundID;
-
         /*SoundPool pool = new SoundPool(1, AudioManager.STREAM_MUSIC,0);
         pool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
             @Override

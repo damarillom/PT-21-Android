@@ -22,6 +22,7 @@
             android:text="Llamadas"
             android:id="@+id/llamadas"
             android:layout_gravity="center_horizontal" />
+
     </LinearLayout>
 
     <TextView android:text="Hello World!"
